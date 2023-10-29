@@ -1,0 +1,42 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.12
+    ports:
+      - 5672:5672
+    environment:
+      - RABBITMQ_DEFAULT_USER=chatgptrabbitmqadmin
+      - RABBITMQ_DEFAULT_PASS=zlpL0xjKYY1iX0j365zoIjz
+    volumes:
+      - ./service/rabbitmq/data:/var/lib/rabbitmq
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 30s
+      timeout: 30s
+      retries: 10
+
+  apiServer:
+    build:
+      context: ./
+      dockerfile: ./service/apiServer/docker/Dockerfile
+    tty: true
+    working_dir: /app
+    volumes:
+      - ./service/apiServer/src:/app
+    command: sh -c "node app.js"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  chatgpt:
+   build:
+     context: ./
+     dockerfile: ./service/chatgpt/docker/Dockerfile
+   tty: true
+   working_dir: /app
+   volumes:
+     - ./service/chatgpt/src:/app
+   command: sh -c "node app.js"
+   depends_on:
+     rabbitmq:
+       condition: service_healthy
+
