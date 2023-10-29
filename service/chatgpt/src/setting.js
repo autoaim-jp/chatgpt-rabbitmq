@@ -2,7 +2,7 @@ const setting = {}
 
 const init = ({ env }) => {
   setting.env = {}
-  setting.env.SERVER_PORT = env.SERVER_PORT
+  setting.env.OPENAPI_CHATGPT_API_KEY = env.OPENAPI_CHATGPT_API_KEY
 
   setting.env.AMQP_USER = env.AMQP_USER
   setting.env.AMQP_PASS = env.AMQP_PASS
@@ -10,17 +10,14 @@ const init = ({ env }) => {
   setting.env.AMQP_PORT = env.AMQP_PORT
 }
 
-setting.static = {}
-setting.static.PUBLIC_STATIC_DIR = 'view/static'
-
 setting.amqp = {}
 setting.amqp.CHATGPT_PROMPT_QUEUE = 'chatgpt-prompt-queue'
 setting.amqp.CHATGPT_RESPONSE_QUEUE = 'chatgpt-response-queue'
 
-setting.api = {}
-const API_ROOT_PATH = '/api/v1'
-setting.api.REGISTER_PROMPT = `${API_ROOT_PATH}/prompt/register`
-setting.api.LOOKUP_CHATGPT_RESPONSE = `${API_ROOT_PATH}/response/lookup`
+setting.chatgpt = {}
+setting.chatgpt.DEFAULT_ROLE = 'user'
+setting.chatgpt.DEFAULT_ROLE = 'what is chatgpt'
+setting.chatgpt.SLEEP_BEFORE_REQUEST_MS = 5 * 1000
 
 const getList = (...keyList) => {
   /* eslint-disable no-param-reassign */

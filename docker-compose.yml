@@ -10,11 +10,11 @@ services:
       - ./service/rabbitmq/data:/var/lib/rabbitmq
     healthcheck:
       test: rabbitmq-diagnostics check_port_connectivity
-      interval: 30s
-      timeout: 30s
-      retries: 10
+      interval: 5s
+      timeout: 10s
+      retries: 20
 
-  apiServer:
+  api_server:
     build:
       context: ./
       dockerfile: ./service/apiServer/docker/Dockerfile
@@ -22,7 +22,9 @@ services:
     working_dir: /app
     volumes:
       - ./service/apiServer/src:/app
-    command: sh -c "node app.js"
+    command: sh -c "yarn run start"
+    ports:
+      - 15672:15672
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -35,7 +37,7 @@ services:
    working_dir: /app
    volumes:
      - ./service/chatgpt/src:/app
-   command: sh -c "node app.js"
+   command: sh -c "yarn run start"
    depends_on:
      rabbitmq:
        condition: service_healthy

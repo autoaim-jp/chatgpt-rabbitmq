@@ -1,12 +1,18 @@
 import dotenv from 'dotenv'
+import path from 'path'
+import { ulid } from 'ulid'
 import express from 'express'
+import amqplib from 'amqplib'
 import bodyParser from 'body-parser'
-import cookeParser from 'cooke-parser'
+import cookieParser from 'cookie-parser'
 
-import setting from './setting/index.js'
+import setting from './setting.js'
+import action from './action.js'
+import core from './core.js'
+import lib from './lib.js'
 
 const asocial = {
-  setting,
+  setting, core, action, lib
 }
 const a = asocial
 
@@ -25,6 +31,13 @@ const _getDefaultRouter = () => {
 
 const _getFunctionRouter = () => {
   const expressRouter = express.Router()
+
+  const { REGISTER_PROMPT, LOOKUP_CHATGPT_RESPONSE } = a.setting.getList('api.REGISTER_PROMPT', 'api.LOOKUP_CHATGPT_RESPONSE')
+  const registerPromptHandler = a.action.getHandlerRegisterPrompt({
+    handleRegisterPrompt: a.core.handleRegisterPrompt
+  })
+  expressRouter.post(REGISTER_PROMPT, registerPromptHandler)
+
   return expressRouter
 }
 
@@ -45,13 +58,17 @@ const startServer = ({ app, port }) => {
   })
 }
 
-const init = () => {
+const init = async () => {
   dotenv.config()
   a.setting.init({ env: process.env })
+  const { AMQP_USER: user, AMQP_PASS: pass, AMQP_HOST: host, AMQP_PORT: port } = a.setting.getList('env.AMQP_USER', 'env.AMQP_PASS', 'env.AMQP_HOST', 'env.AMQP_PORT')
+  const amqpConnection = await a.lib.createAmqpConnection({ amqplib, user, pass, host, port })
+  await core.init({ setting, lib, amqpConnection })
+  lib.init({ ulid })
 }
 
-const main = () => {
-  a.app.init()
+const main = async () => {
+  await a.app.init()
   const expressApp = express()
   expressApp.disable('x-powered-by')
 
@@ -61,7 +78,9 @@ const main = () => {
 
   expressApp.use(_getErrorRouter())
 
-  startServer({ app: expressApp, port: a.setting.getValue('server.SERVER_PORT') })
+  startServer({ app: expressApp, port: a.setting.getValue('env.SERVER_PORT') })
+
+  a.core.startConsumer()
 }
 
 const app = {
