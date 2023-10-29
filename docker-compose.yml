@@ -23,6 +23,7 @@ services:
     working_dir: /app
     volumes:
       - ./service/apiServer/src:/app
+      - chatgpt-rabbitmq-as-nm:/app/node_modules
     command: sh -c "yarn run start"
     ports:
       - 25672:25672
@@ -38,8 +39,13 @@ services:
    working_dir: /app
    volumes:
      - ./service/chatgpt/src:/app
+      - chatgpt-rabbitmq-cg-nm:/app/node_modules
    command: sh -c "yarn run start"
    depends_on:
      rabbitmq:
        condition: service_healthy
+
+volumes:
+  chatgpt-rabbitmq-as-nm:
+  chatgpt-rabbitmq-cg-nm:
 
