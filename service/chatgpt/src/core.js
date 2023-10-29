@@ -19,13 +19,15 @@ const init = async ({ setting, lib, amqpConnection, OpenAI }) => {
 
 const _fetchChatgpt = async ({ role, prompt }) => {
   const requestObj = {
-      messages: [{ role, content: prompt }],
-        model: 'gpt-3.5-turbo',
-    }
+    messages: [{ role, content: prompt }],
+    model: 'gpt-3.5-turbo',
+  }
 
   const requestOption = {
-    maxRetries: 5 
+    maxRetries: 5,
+    timeout: 5 * 1000,
   }
+  console.log('request', JSON.stringify(requestObj, null, 2))
   const responseObj = await mod.openaiClient.chat.completions.create(requestObj, requestOption)
 
   return responseObj
