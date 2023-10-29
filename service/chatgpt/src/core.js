@@ -18,17 +18,19 @@ const init = async ({ setting, lib, amqpConnection, OpenAI }) => {
 }
 
 const _fetchChatgpt = async ({ role, prompt }) => {
-  const requestObj = {
-    messages: [{ role, content: prompt }],
+  const stream = await mod.openaiClient.chat.completions.create({
+    // model: 'gpt-4',
     model: 'gpt-3.5-turbo',
+    messages: [{ role, content: prompt }],
+    stream: true,
+  })
+  let response = ''
+  for await (const part of stream) {
+    // process.stdout.write(part.choices[0]?.delta?.content || '')
+    response += part.choices[0]?.delta?.content || ''
   }
 
-  const requestOption = {
-    maxRetries: 5,
-    timeout: 5 * 1000,
-  }
-  console.log('request', JSON.stringify(requestObj, null, 2))
-  const responseObj = await mod.openaiClient.chat.completions.create(requestObj, requestOption)
+  const responseObj = { response }
 
   return responseObj
 }
