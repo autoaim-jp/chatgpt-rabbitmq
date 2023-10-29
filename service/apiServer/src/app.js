@@ -33,10 +33,18 @@ const _getFunctionRouter = () => {
   const expressRouter = express.Router()
 
   const { REGISTER_PROMPT, LOOKUP_CHATGPT_RESPONSE } = a.setting.getList('api.REGISTER_PROMPT', 'api.LOOKUP_CHATGPT_RESPONSE')
+
   const registerPromptHandler = a.action.getHandlerRegisterPrompt({
     handleRegisterPrompt: a.core.handleRegisterPrompt
   })
   expressRouter.post(REGISTER_PROMPT, registerPromptHandler)
+
+  const lookupChatgptResponseHandler = a.action.getHandlerLookupChatgptResponse({
+    handleLookupChatgptResponse: a.core.handleLookupChatgptResponse
+  })
+  expressRouter.get(LOOKUP_CHATGPT_RESPONSE, lookupChatgptResponseHandler)
+
+
 
   return expressRouter
 }

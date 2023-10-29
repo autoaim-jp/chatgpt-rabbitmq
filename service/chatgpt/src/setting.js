@@ -2,7 +2,7 @@ const setting = {}
 
 const init = ({ env }) => {
   setting.env = {}
-  setting.env.OPENAPI_CHATGPT_API_KEY = env.OPENAPI_CHATGPT_API_KEY
+  setting.env.OPENAI_CHATGPT_API_KEY = env.OPENAI_CHATGPT_API_KEY
 
   setting.env.AMQP_USER = env.AMQP_USER
   setting.env.AMQP_PASS = env.AMQP_PASS
@@ -16,7 +16,7 @@ setting.amqp.CHATGPT_RESPONSE_QUEUE = 'chatgpt-response-queue'
 
 setting.chatgpt = {}
 setting.chatgpt.DEFAULT_ROLE = 'user'
-setting.chatgpt.DEFAULT_ROLE = 'what is chatgpt'
+setting.chatgpt.DEFAULT_PROMPT = 'what is chatgpt'
 setting.chatgpt.SLEEP_BEFORE_REQUEST_MS = 5 * 1000
 
 const getList = (...keyList) => {

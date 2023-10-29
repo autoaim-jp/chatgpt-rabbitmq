@@ -1,8 +1,9 @@
 services:
   rabbitmq:
-    image: rabbitmq:3.12
+    image: rabbitmq:3.11-management
     ports:
       - 5672:5672
+      - 15672:15672
     environment:
       - RABBITMQ_DEFAULT_USER=chatgptrabbitmqadmin
       - RABBITMQ_DEFAULT_PASS=zlpL0xjKYY1iX0j365zoIjz
@@ -24,7 +25,7 @@ services:
       - ./service/apiServer/src:/app
     command: sh -c "yarn run start"
     ports:
-      - 15672:15672
+      - 25672:25672
     depends_on:
       rabbitmq:
         condition: service_healthy

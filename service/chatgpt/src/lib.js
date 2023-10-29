@@ -14,7 +14,6 @@ const awaitSleep = ({ ms }) => {
 }
 
 export default {
-  init,
   createAmqpConnection,
   awaitSleep,
 }
