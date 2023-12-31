@@ -2,8 +2,8 @@ services:
   rabbitmq:
     image: rabbitmq:3.11-management
     ports:
-      - 5672:5672
-      - 15672:15672
+      - 127.0.0.1:5672:5672
+      - 127.0.0.1:15672:15672
     environment:
       - RABBITMQ_DEFAULT_USER=chatgptrabbitmqadmin
       - RABBITMQ_DEFAULT_PASS=zlpL0xjKYY1iX0j365zoIjz
@@ -26,7 +26,7 @@ services:
       - chatgpt-rabbitmq-as-nm:/app/node_modules
     command: sh -c "yarn run start"
     ports:
-      - 25672:25672
+      - 127.0.0.1:25672:25672
     depends_on:
       rabbitmq:
         condition: service_healthy
